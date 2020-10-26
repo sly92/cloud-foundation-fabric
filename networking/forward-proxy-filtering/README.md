@@ -9,4 +9,4 @@ The VPC will be a Shared VPC and all the service projects will be located under 
 
 To allow Internet connectivity to the proxy subnet, a is Cloud NAT instance configured to allow usage from that subnet. All other subnets are not allowed to use the Cloud NAT instance.
 
-To simplify the usage of the proxy, a Cloud DNS private zone is created and the IP address of the proxy is exposed with the FQDN `proxy.internal`. This allows clients VMs to use the proxy by simple setting `HTTP_PROXY` and `HTTPS_PROXY` variables to "proxy.internal:3128"
+To simplify the usage of the proxy, a Cloud DNS private zone is created and the IP address of the proxy is exposed with the FQDN `proxy.internal`. This allows clients VMs to use the proxy by simply setting the `HTTP_PROXY` and `HTTPS_PROXY` variables to "proxy.internal:3128"
