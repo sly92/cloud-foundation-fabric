@@ -101,11 +101,11 @@ resource "google_compute_firewall" "custom_allow" {
   source_service_accounts = each.value.use_service_accounts && each.value.direction == "INGRESS" ? each.value.sources : null
   target_tags             = each.value.use_service_accounts ? null : each.value.targets
   target_service_accounts = each.value.use_service_accounts ? each.value.targets : null
-  disabled                = lookup(each.value.extra_attributes, "disabled", false)
-  priority                = lookup(each.value.extra_attributes, "priority", 1000)
+  disabled                = each.value.disabled
+  priority                = each.value.priority
 
   dynamic "log_config" {
-    for_each = lookup(each.value.extra_attributes, "logging", null) != null ? [each.value.extra_attributes.logging] : []
+    for_each = each.value.logging != null ? [each.value.logging] : []
     iterator = logging_config
     content {
       metadata = logging_config.value
@@ -136,11 +136,11 @@ resource "google_compute_firewall" "custom_deny" {
   source_service_accounts = each.value.use_service_accounts && each.value.direction == "INGRESS" ? each.value.sources : null
   target_tags             = each.value.use_service_accounts ? null : each.value.targets
   target_service_accounts = each.value.use_service_accounts ? each.value.targets : null
-  disabled                = lookup(each.value.extra_attributes, "disabled", false)
-  priority                = lookup(each.value.extra_attributes, "priority", 1000)
+  disabled                = each.value.disabled
+  priority                = each.value.priority
 
   dynamic "log_config" {
-    for_each = lookup(each.value.extra_attributes, "logging", null) != null ? [each.value.extra_attributes.logging] : []
+    for_each = each.value.logging != null ? [each.value.logging] : []
     iterator = logging_config
     content {
       metadata = logging_config.value

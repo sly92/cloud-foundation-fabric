@@ -15,5 +15,6 @@
  */
 
 terraform {
-  required_version = ">= 0.12.6"
+  required_version = ">= 0.14.7"
+  experiments      = [module_variable_optional_attrs]
 }

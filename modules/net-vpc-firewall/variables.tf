@@ -61,14 +61,16 @@ variable "custom_rules" {
     direction            = string
     action               = string # (allow|deny)
     ranges               = list(string)
-    sources              = list(string)
+    sources              = optional(list(string))
     targets              = list(string)
     use_service_accounts = bool
+    disabled             = optional(bool)
+    priority             = optional(number)
     rules = list(object({
       protocol = string
       ports    = list(string)
     }))
-    extra_attributes = map(string)
+    logging = optional(string)
   }))
   default = {}
 }

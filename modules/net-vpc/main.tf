@@ -26,7 +26,6 @@ locals {
     ]
   ])
 
-  log_configs = var.log_configs == null ? {} : var.log_configs
   peer_network = (
     var.peering_config == null
     ? null
@@ -52,17 +51,6 @@ locals {
   routes_vpn_tunnel = {
     for name, data in local.routes :
     name => data if data.next_hop_type == "vpn_tunnel"
-  }
-  subnet_log_configs = {
-    for name, attrs in { for s in local.subnets : format("%s/%s", s.region, s.name) => s } : name => (
-      lookup(var.subnet_flow_logs, name, false)
-      ? [{
-        for key, value in var.log_config_defaults : key => lookup(
-          lookup(local.log_configs, name, {}), key, value
-        )
-      }]
-      : []
-    )
   }
   subnets = {
     for subnet in var.subnets :
@@ -141,10 +129,10 @@ resource "google_compute_subnetwork" "subnetwork" {
     for name, range in each.value.secondary_ip_range :
     { range_name = name, ip_cidr_range = range }
   ]
-  description              = lookup(var.subnet_descriptions, "${each.value.region}/${each.value.name}", "Terraform-managed.")
-  private_ip_google_access = lookup(var.subnet_private_access, "${each.value.region}/${each.value.name}", true)
+  description              = each.value.description
+  private_ip_google_access = each.value.private_access
   dynamic "log_config" {
-    for_each = local.subnet_log_configs["${each.value.region}/${each.value.name}"]
+    for_each = each.value.flow_logs != null ? [each.value.flow_logs] : []
     iterator = config
     content {
       aggregation_interval = config.value.aggregation_interval

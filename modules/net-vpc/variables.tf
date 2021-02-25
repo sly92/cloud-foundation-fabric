@@ -38,26 +38,6 @@ variable "iam" {
   default     = {}
 }
 
-variable "log_configs" {
-  description = "Map keyed by subnet 'region/name' of optional configurations for flow logs when enabled."
-  type        = map(map(string))
-  default     = {}
-}
-
-variable "log_config_defaults" {
-  description = "Default configuration for flow logs when enabled."
-  type = object({
-    aggregation_interval = string
-    flow_sampling        = number
-    metadata             = string
-  })
-  default = {
-    aggregation_interval = "INTERVAL_5_SEC"
-    flow_sampling        = 0.5
-    metadata             = "INCLUDE_ALL_METADATA"
-  }
-}
-
 variable "mtu" {
   description = "Maximum Transmission Unit in bytes. The minimum value for this field is 1460 and the maximum value is 1500 bytes."
   default     = null
@@ -109,7 +89,6 @@ variable "routing_mode" {
     condition     = var.routing_mode == "GLOBAL" || var.routing_mode == "REGIONAL"
     error_message = "Routing type must be GLOBAL or REGIONAL."
   }
-
 }
 
 variable "shared_vpc_host" {
@@ -131,27 +110,16 @@ variable "subnets" {
     ip_cidr_range      = string
     name               = string
     region             = string
-    secondary_ip_range = map(string)
+    secondary_ip_range = optional(map(string))
+    description        = optional(string)
+    flow_logs = optional(object({
+      aggregation_interval = string
+      flow_sampling        = number
+      metadata             = string
+    }))
+    private_access = optional(bool)
   }))
   default = []
-}
-
-variable "subnet_descriptions" {
-  description = "Optional map of subnet descriptions, keyed by subnet 'region/name'."
-  type        = map(string)
-  default     = {}
-}
-
-variable "subnet_flow_logs" {
-  description = "Optional map of boolean to control flow logs (default is disabled), keyed by subnet 'region/name'."
-  type        = map(bool)
-  default     = {}
-}
-
-variable "subnet_private_access" {
-  description = "Optional map of boolean to control private Google access (default is enabled), keyed by subnet 'region/name'."
-  type        = map(bool)
-  default     = {}
 }
 
 variable "vpc_create" {
